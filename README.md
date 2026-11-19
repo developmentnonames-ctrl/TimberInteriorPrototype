@@ -1,4 +1,4 @@
-# Timbre Interior: scrollytelling site
+# Timbre Interior: Prototype
 
 UI-only Astro site for Timbre Interior (Sri Lankan teak and rattan furniture). No backend: the inquiry form shows a thank-you state.
 
