@@ -1,0 +1,218 @@
+---
+import srcsetData from '../data/srcset.json';
+const srcset: Record<string, string> = srcsetData;
+import FigureStage from './FigureStage.astro';
+import { products } from '../data/products.js';
+
+const pieces = ([
+  { key: 'laurent', name: 'Laurent', product: 'Laurent Outdoor Lounge', type: 'Outdoor lounge', material: 'Rattan', accent: '#56717a', line: 'Woven strand by strand by Sri Lankan artisans.' },
+  { key: 'otto', name: 'Otto', product: 'Otto Lounge Chair', type: 'Lounge chair', material: 'Teak', accent: '#66755a', line: 'Lean back, settle in, stay a while.' },
+  { key: 'marcel', name: 'Marcel', product: 'Marcel Sofa', type: 'Sofa', material: 'Teak base', accent: '#a4542f', line: 'Deep enough to curl up with a good book.' },
+  { key: 'kaizen', name: 'Kaizen', product: 'Kaizen Bar Chair', type: 'Bar chair', material: 'Teak & rattan', accent: '#5b6432', line: 'Refined, not rushed. Made for the morning coffee.' },
+] as const).map((p) => {
+  const { swatches } = products.find((x) => x.name === p.product)!;
+  return { ...p, swatches };
+});
+---
+<section class="hero" data-hero id="top" data-tone="dark">
+  <div class="hero__poster" data-hero-poster>
+
+    <div class="hero__scenes" aria-hidden="true">
+      {pieces.map((p, i) => (
+        <div class="hero__scene" data-hero-scene>
+          <img src={`/images/scenes/${p.key}.jpg`} srcset={srcset[`/images/scenes/${p.key}.jpg`]} sizes="100vw" alt="" decoding="async" fetchpriority={i ? 'low' : 'high'} />
+        </div>
+      ))}
+    </div>
+
+    <h1 class="hero__words display" aria-label={`${pieces.map((p) => p.name).join('. ')}. Timbre furniture`}>
+      {pieces.map((p) => <span class="hero__word" data-word>{p.name}</span>)}
+    </h1>
+
+    <div class="hero__art" data-hero-art>
+      {pieces.map((p, i) => <FigureStage piece={p.key} i={i} class="hero__stage" />)}
+    </div>
+
+    <div class="hero__foot">
+      <div class="hero__caps">
+        {pieces.map((p) => (
+          <article class="hero__cap" data-cap aria-label={p.product} style={`--accent:${p.accent}`}>
+            <p class="hero__cap-type">{p.type}, in {p.material.toLowerCase()}</p>
+            <h2 class="hero__cap-name">{p.product}</h2>
+            <p class="hero__cap-line">{p.line}</p>
+            <div class="hero__cap-foot">
+              <ul class="hero__cap-sw" aria-label="Available finishes">{p.swatches.map((c) => <li style={`background:${c}`}></li>)}</ul>
+              <a class="hero__cap-btn" href="#inquire">Inquire <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <span class="wordmark hero__mark" role="img" aria-label="timbre"></span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100svh;
+    padding: var(--frame);
+    background: var(--paper);
+  }
+  .hero__poster {
+    --bg: var(--dust);
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--line);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    transform-origin: 50% 0%;
+  }
+  .hero__scenes { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .hero__scene { position: absolute; inset: 0; clip-path: circle(0% at 50% 62%); }
+  .hero__scene img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); will-change: transform; }
+  .hero__scene::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20, 18, 15, 0.16) 0%, rgba(20, 18, 15, 0) 40%, rgba(20, 18, 15, 0) 80%, rgba(20, 18, 15, 0.14) 100%);
+  }
+  :global(html.booting) .hero__words, :global(html.booting) .hero__art, :global(html.booting) .hero__foot { visibility: hidden; }
+  .hero__words {
+    position: relative;
+    height: 0.9em;
+    margin: clamp(64px, 9vh, 110px) var(--gutter) 0;
+    font-size: clamp(48px, 15.6vw, 300px);
+    text-align: center;
+    overflow: hidden;
+    color: var(--line);
+    z-index: 1;
+  }
+  .hero__word { position: absolute; inset: 0; display: block; will-change: transform; }
+  .hero__word + .hero__word { visibility: hidden; }
+
+  .hero__art {
+    --u: min(0.37vh, 0.28vw);
+    position: absolute;
+    z-index: 2;
+    inset: auto 0 3% 0;
+    height: 72%;
+    pointer-events: none;
+  }
+  .hero__art :global(.hero__stage) {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    translate: -50% 0;
+  }
+  .hero__art :global(.hero__stage:not([data-i='0'])) { opacity: 0; }
+
+  .hero__foot {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 0 var(--gutter) clamp(18px, 3vh, 34px);
+  }
+  .hero__caps { position: relative; width: min(360px, 46vw); height: 168px; }
+  .hero__cap {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px 20px 18px 22px;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--cream) 92%, transparent);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 24px 50px -28px rgba(20, 18, 15, 0.6);
+    color: var(--ink);
+  }
+  .hero__cap-type { margin: 0; font-size: 13px; line-height: 1.3; color: var(--ink-soft); opacity: 0.85; }
+  .hero__cap-name { margin: 2px 0 6px; font-family: var(--f-serif); font-weight: 400; font-size: 27px; line-height: 1.05; letter-spacing: -0.015em; }
+  .hero__cap-line { margin: 0; font-size: 14px; line-height: 1.4; color: var(--ink-soft); }
+  .hero__cap-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; }
+  .hero__cap-sw { list-style: none; display: flex; gap: 6px; margin: 0; padding: 0; }
+  .hero__cap-sw li { width: 16px; height: 16px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(31, 32, 28, 0.15); }
+  .hero__cap-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--cream);
+    font-family: var(--f-display);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    pointer-events: auto;
+    transition: background 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+  .hero__cap-btn:hover { background: color-mix(in srgb, var(--accent) 78%, black); }
+  .hero__cap-btn span { display: inline-block; transition: transform 0.4s var(--ease-out); }
+  .hero__cap-btn:hover span { transform: translateX(4px); }
+  .hero__cap + .hero__cap { opacity: 0; visibility: hidden; }
+  .hero__mark { width: clamp(110px, 12vw, 190px); color: var(--cream); }
+
+  @media (max-width: 720px) {
+    .hero { padding: 8px; --cap: 162px; }
+    .hero__words { margin-top: 78px; font-size: clamp(44px, 15vw, 96px); }
+    .hero__art {
+      --u: min(0.36svh, calc((100svh - var(--cap) - 190px) / 160));
+      --maxw: 94vw;
+      bottom: calc(var(--cap) + 14px);
+      height: auto;
+      top: 0;
+    }
+    .hero__foot { padding: 0 10px 10px; }
+    .hero__caps { width: 100%; height: var(--cap); }
+    .hero__cap {
+      padding: 14px 16px 14px 18px;
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--cream) 95%, transparent);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .hero__cap-type { font-size: 12px; }
+    .hero__cap-name { font-size: 22px; margin: 2px 0 4px; }
+    .hero__cap-line { font-size: 13px; }
+    .hero__cap-foot { margin-top: 12px; }
+    .hero__cap-btn { padding: 11px 18px; }
+    .hero__mark { display: none; }
+  }
+  @media (min-width: 721px) and (max-width: 1100px) and (orientation: portrait) {
+    .hero__art {
+      --lift: calc(168px + clamp(18px, 3vh, 34px) + 22px);
+      --u: min(0.42svh, calc((100svh - var(--lift) - 240px) / 160));
+      --maxw: 86vw;
+      bottom: var(--lift);
+      height: auto;
+      top: 0;
+    }
+  }
+  @media (max-height: 500px) and (orientation: landscape) {
+    .hero { padding: 8px; --cap-w: min(320px, 42vw); }
+    .hero__words { margin-top: 60px; font-size: min(15vw, 19svh); }
+    .hero__foot { padding: 0 12px 12px; }
+    .hero__caps { width: var(--cap-w); height: 150px; }
+    .hero__cap { padding: 12px 14px 12px 16px; border-radius: 16px; -webkit-backdrop-filter: none; backdrop-filter: none; background: color-mix(in srgb, var(--cream) 95%, transparent); }
+    .hero__cap-type { font-size: 11.5px; }
+    .hero__cap-name { font-size: 19px; margin: 1px 0 4px; }
+    .hero__cap-line { font-size: 12.5px; }
+    .hero__cap-foot { margin-top: 10px; }
+    .hero__art {
+      --u: calc((100svh - 60px - 17svh - 34px) / 160);
+      --maxw: 54vw;
+      top: 0; bottom: 12px; left: calc(var(--cap-w) + 24px); right: 0; height: auto;
+    }
+    .hero__mark { display: none; }
+  }
+</style>

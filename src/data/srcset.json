@@ -1,0 +1,21 @@
+{
+  "/cutouts/arc-armchair.webp": "/cutouts/arc-armchair-320w.webp 320w, /cutouts/arc-armchair.webp 397w",
+  "/cutouts/kaizen-stool.webp": "/cutouts/kaizen-stool-320w.webp 320w, /cutouts/kaizen-stool-480w.webp 480w, /cutouts/kaizen-stool.webp 730w",
+  "/cutouts/laurent-lounge.webp": "/cutouts/laurent-lounge-320w.webp 320w, /cutouts/laurent-lounge-480w.webp 480w, /cutouts/laurent-lounge.webp 657w",
+  "/cutouts/marcel-sofa.webp": "/cutouts/marcel-sofa-320w.webp 320w, /cutouts/marcel-sofa-480w.webp 480w, /cutouts/marcel-sofa.webp 880w",
+  "/cutouts/nico-specs.webp": "/cutouts/nico-specs-320w.webp 320w, /cutouts/nico-specs-480w.webp 480w, /cutouts/nico-specs.webp 513w",
+  "/cutouts/otto-lounge.webp": "/cutouts/otto-lounge-320w.webp 320w, /cutouts/otto-lounge-480w.webp 480w, /cutouts/otto-lounge.webp 560w",
+  "/cutouts/sling-lounger.webp": "/cutouts/sling-lounger-320w.webp 320w, /cutouts/sling-lounger-480w.webp 480w, /cutouts/sling-lounger.webp 805w",
+  "/cutouts/theo-stool.webp": "/cutouts/theo-stool.webp 218w",
+  "/images/craftsman.jpg": "/images/craftsman-480w.webp 480w, /images/craftsman.jpg 709w",
+  "/images/pencil.jpg": "/images/pencil-480w.webp 480w, /images/pencil-800w.webp 800w, /images/pencil.jpg 1152w",
+  "/images/meet-kaia.jpg": "/images/meet-kaia-480w.webp 480w, /images/meet-kaia-800w.webp 800w, /images/meet-kaia.jpg 1152w",
+  "/images/meet-j.jpg": "/images/meet-j-480w.webp 480w, /images/meet-j-800w.webp 800w, /images/meet-j.jpg 1152w",
+  "/images/spaces-hotel.jpg": "/images/spaces-hotel-480w.webp 480w, /images/spaces-hotel-800w.webp 800w, /images/spaces-hotel.jpg 820w",
+  "/images/spaces-cafe.jpg": "/images/spaces-cafe-480w.webp 480w, /images/spaces-cafe-800w.webp 800w, /images/spaces-cafe.jpg 825w",
+  "/images/spaces-retreat.jpg": "/images/spaces-retreat-480w.webp 480w, /images/spaces-retreat-800w.webp 800w, /images/spaces-retreat.jpg 825w",
+  "/images/scenes/laurent.jpg": "/images/scenes/laurent-1280w.webp 1280w, /images/scenes/laurent-1920w.webp 1920w, /images/scenes/laurent.jpg 2400w",
+  "/images/scenes/otto.jpg": "/images/scenes/otto-1280w.webp 1280w, /images/scenes/otto-1920w.webp 1920w, /images/scenes/otto.jpg 2400w",
+  "/images/scenes/marcel.jpg": "/images/scenes/marcel-1280w.webp 1280w, /images/scenes/marcel-1920w.webp 1920w, /images/scenes/marcel.jpg 2400w",
+  "/images/scenes/kaizen.jpg": "/images/scenes/kaizen-1280w.webp 1280w, /images/scenes/kaizen-1920w.webp 1920w, /images/scenes/kaizen.jpg 2400w"
+}

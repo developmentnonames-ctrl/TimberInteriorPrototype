@@ -1,0 +1,89 @@
+---
+import srcsetData from '../data/srcset.json';
+const srcset: Record<string, string> = srcsetData;
+---
+<section class="makers" aria-labelledby="makers-title">
+  <div class="makers__intro">
+    <div>
+      <h2 class="serif-xl" id="makers-title" data-split>Design for people starts <em>with people.</em></h2>
+      <p class="makers__sub" data-fade>Two people behind every piece: one shapes the philosophy, the other refines the form.</p>
+    </div>
+    <div class="makers__flow" data-fade>
+      <p class="hand makers__note">two pairs of hands <span aria-hidden="true">→</span></p>
+      <ol class="makers__steps">
+        <li><span class="makers__n">01</span><span class="makers__who">Kaia</span><span class="makers__what">The form</span></li>
+        <li><span class="makers__n">02</span><span class="makers__who">J.</span><span class="makers__what">The philosophy</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <article class="maker maker--kaia">
+    <div class="maker__frame" data-reveal-img><img src="/images/meet-kaia.jpg" srcset={srcset['/images/meet-kaia.jpg']} sizes="auto, 30vw" alt="Kaia smiling, seated in a deep green armchair" loading="lazy" /></div>
+    <h3 class="sr">Meet Kaia</h3>
+    <p class="maker__text">Kaia listens more than she speaks, and knows what makes a room feel right. She guides every piece, from the first conversation to the final curve.</p>
+  </article>
+
+  <article class="maker maker--j">
+    <div class="maker__frame" data-reveal-img><img src="/images/meet-j.jpg" srcset={srcset['/images/meet-j.jpg']} sizes="auto, 30vw" alt="J. sketching a chair with ink while Kaia looks on" loading="lazy" /></div>
+    <h3 class="sr">Meet J.</h3>
+    <p class="maker__text">Timbre began as J.'s vision. A former software engineer drawn to the restraint of Japanese design, J. shapes the philosophy: flow, function, and pieces made to last.</p>
+  </article>
+</section>
+
+<style>
+  .makers {
+    position: relative;
+    z-index: 2;
+    background: var(--cream);
+    padding: clamp(72px, 12vh, 140px) var(--gutter);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 20px;
+  }
+  .makers__intro { grid-column: 1 / -1; }
+  .makers__intro em { color: var(--olive); }
+  .makers__sub { margin: 22px 0 0; font-size: clamp(17px, 1.3vw, 21px); line-height: 1.5; color: var(--ink-soft); max-width: 30ch; text-wrap: pretty; }
+  .makers__flow { margin-top: 28px; }
+  .makers__note { margin: 0 0 10px; font-size: 24px; color: var(--rattan); }
+  .makers__steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(31, 32, 28, 0.15); }
+  .makers__steps li { display: grid; gap: 4px; padding: 14px 16px 0 0; }
+  .makers__steps li + li { padding-left: 16px; border-left: 1px solid rgba(31, 32, 28, 0.15); }
+  .makers__n { font-family: var(--f-display); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--rattan); }
+  .makers__who { font-family: var(--f-serif); font-size: clamp(20px, 1.6vw, 26px); line-height: 1.1; color: var(--ink); }
+  .makers__what { font-size: 14px; color: var(--ink-soft); }
+
+  .maker { margin: 0; min-width: 0; }
+  .maker__frame { aspect-ratio: 4 / 5; overflow: hidden; background: var(--paper); }
+  .maker__frame img { width: 100%; height: 100%; object-fit: cover; }
+  .maker__text { margin: 14px 0 0; font-size: 15px; line-height: 1.55; color: var(--ink-soft); max-width: 34ch; text-wrap: pretty; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-width: 600px) {
+    .makers { grid-template-columns: 1fr; row-gap: 36px; }
+    .maker { width: 86%; }
+    .maker--j { justify-self: end; }
+    .makers__steps li { padding-right: 10px; }
+  }
+
+  @media (min-width: 821px) and (min-height: 501px) {
+    .makers {
+      --h: min(56svh, 31vw);
+      height: 100svh;
+      padding: max(10svh, 100px) var(--gutter) 6svh;
+      grid-template-columns: minmax(0, 1fr) calc(var(--h) * 0.8) calc(var(--h) * 0.8);
+      column-gap: clamp(24px, 3.2vw, 56px);
+      align-content: center;
+      align-items: start;
+    }
+    .makers__intro { grid-column: auto; height: var(--h); display: flex; flex-direction: column; justify-content: space-between; padding-right: 3vw; }
+    .makers__intro .serif-xl { font-size: clamp(40px, min(5vw, 9.5svh), 104px); }
+    .makers__sub { margin-top: 2.6svh; }
+    .makers__flow { margin-top: 0; max-width: 420px; }
+    .maker__frame { height: var(--h); }
+    .maker--j { margin-top: 7svh; }
+    .maker__text { margin-top: 1.8svh; }
+  }
+  @media (max-height: 500px) {
+    .maker { width: min(100%, calc(84svh * 0.8)); }
+  }
+</style>

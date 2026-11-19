@@ -1,0 +1,163 @@
+---
+import { FIGURES } from '../data/figures.js';
+import { CHAIRS } from '../data/chairs.js';
+import * as ottoMan from '../data/otto-man-path.js';
+import * as marcelWoman from '../data/marcel-woman-path.js';
+
+interface Props { piece: 'laurent' | 'otto' | 'marcel' | 'kaizen'; i?: number; class?: string }
+const { piece: key, i = 0, class: cls = '' } = Astro.props;
+const uid = `${key}-${Math.random().toString(36).slice(2, 7)}`;
+
+type Poly = { poly: number[][]; pivot: number[] };
+type Stage = { src: string; alt: string; w: number; h: number; viewBox: number[]; cm: number; front: number[][] };
+type Traced = {
+  d: string; img?: string; vw: number; vh: number; k: number; tx: number; ty: number; parts: Record<string, Poly>;
+  patches?: { d: string; part?: string; w: number }[];
+};
+let stage: Stage;
+let traced: Traced;
+
+if (key === 'laurent') {
+  const c = CHAIRS.laurent;
+  const s = 1.36, ox = -428.4, oy = -289.7;
+  const crop = { left: 150, top: 25, scale: 2 };
+  traced = {
+    d: '', img: '/figures/laurent-woman.webp', vw: 1030, vh: 1440, k: s / crop.scale,
+    tx: ox + s * crop.left, ty: oy + s * crop.top,
+    parts: {
+      head: { pivot: [780, 285], poly: [[620, 0], [930, 0], [930, 230], [850, 270], [780, 300], [690, 280], [620, 200]] },
+      foot: { pivot: [268, 955], poly: [[0, 960], [180, 900], [262, 905], [272, 1000], [215, 1090], [0, 1090]] },
+    },
+    patches: [
+      { d: 'M 146 1323 C 180 1328, 222 1328, 258 1325', w: 5 },
+      { d: 'M 364 1212 C 366 1208, 369 1205, 373 1202', w: 5 },
+      { d: 'M 198 1040 C 210 1036, 222 1031, 234 1026', w: 5, part: 'foot' },
+    ],
+  };
+  stage = { src: c.src, alt: c.alt, w: c.w, h: c.h, front: c.front, cm: (c.floorY - c.seatY) / 43, viewBox: [-240, -300, 1136, 990] };
+} else if (key === 'otto') {
+  const c = CHAIRS.otto;
+  const s = 0.77, ox = -57.5, oy = -225;
+  const [, , vw2, vh2] = ottoMan.viewBox.split(' ').map(Number);
+  const k = s / ottoMan.crop.scale;
+  traced = {
+    d: ottoMan.path, vw: vw2, vh: vh2, k,
+    tx: ox + s * ottoMan.crop.left, ty: oy + s * ottoMan.crop.top,
+    parts: {
+      head: { pivot: [560, 385], poly: [[410, 0], [720, 0], [720, 330], [660, 372], [560, 392], [470, 372], [410, 300]] },
+      arm: { pivot: [205, 815], poly: [[110, 812], [250, 800], [290, 990], [230, 1070], [140, 1070], [110, 960]] },
+    },
+  };
+  stage = { src: c.src, alt: c.alt, w: c.w, h: c.h, front: [], cm: FIGURES.otto.cm, viewBox: FIGURES.otto.viewBox };
+} else if (key === 'marcel') {
+  const c = CHAIRS.marcel;
+  const s = 1.087, ox = -126.9, oy = -100.5;
+  const [, , vw2, vh2] = marcelWoman.viewBox.split(' ').map(Number);
+  traced = {
+    d: '', img: '/figures/marcel-woman.webp', vw: vw2, vh: vh2, k: s / marcelWoman.crop.scale,
+    tx: ox + s * marcelWoman.crop.left, ty: oy + s * marcelWoman.crop.top,
+    parts: {
+      head: { pivot: [1070, 275], poly: [[900, 0], [1240, 0], [1240, 250], [1150, 270], [1060, 290], [960, 270], [900, 200]] },
+      foot: { pivot: [295, 585], poly: [[40, 600], [180, 560], [300, 560], [310, 650], [200, 672], [40, 672]] },
+    },
+  };
+  stage = { src: c.src, alt: c.alt, w: c.w, h: c.h, front: [], cm: FIGURES.marcel.cm, viewBox: [-10, -90, 900, 590] };
+} else {
+  const s = 1.767, ox = -312.3, oy = -538.5;
+  const crop = { left: 85, top: 25, scale: 2 };
+  traced = {
+    d: '', img: '/figures/kaizen-man.webp', vw: 900, vh: 1950, k: s / crop.scale,
+    tx: ox + s * crop.left, ty: oy + s * crop.top,
+    parts: {
+      head: { pivot: [560, 335], poly: [[400, 0], [740, 0], [740, 300], [640, 345], [540, 360], [430, 330], [400, 240]] },
+      foot: { pivot: [330, 1520], poly: [[200, 1525], [380, 1505], [400, 1600], [360, 1680], [220, 1690]] },
+      steam: { pivot: [360, 505], poly: [[296, 286], [424, 286], [424, 502], [296, 502]] },
+    },
+  };
+  stage = { src: '/cutouts/kaizen-stool.webp', alt: 'Kaizen Bar Chair in teak and hand-woven rattan', w: 730, h: 1150, front: [], cm: FIGURES.kaizen.cm, viewBox: [-170, -500, 1070, 1680] };
+}
+const [vx, vy, vw, vh] = stage.viewBox;
+const heightCm = vh / stage.cm;
+const pts = (p: number[][]) => p.map((q) => q.join(',')).join(' ');
+
+const tparts = traced.parts;
+const partNames = Object.keys(tparts);
+const tT = `translate(${traced.tx} ${traced.ty}) scale(${traced.k})`;
+const patchesFor = (part?: string) => (traced.patches ?? []).filter((p) => p.part === part);
+const mapPivot = (p: number[]) => [traced.tx + p[0] * traced.k, traced.ty + p[1] * traced.k];
+const pct = ([x, y]: number[]) => `${(((x - vx) / vw) * 100).toFixed(3)}% ${(((y - vy) / vh) * 100).toFixed(3)}%`;
+const unit = (100 / vh).toFixed(5);
+const viewBox = `${vx} ${vy} ${vw} ${vh}`;
+---
+<div class:list={['stage', cls]} data-i={i} style={`--hcm:${heightCm.toFixed(1)};--ar:${(vh / vw).toFixed(4)};aspect-ratio:${vw}/${vh}`}>
+  <div class="stage__art" data-stage-art>
+    <svg class="stage__layer" viewBox={viewBox} preserveAspectRatio="none" role="img" aria-label={stage.alt}>
+      <ellipse class="stage__shadow" cx={stage.w * 0.5} cy={stage.h - 6} rx={stage.w * 0.46} ry={stage.h * 0.018} />
+      <image class="stage__chair" href={stage.src} x="0" y="0" width={stage.w} height={stage.h} data-chair />
+    </svg>
+
+    <div class="stage__fig" data-reader data-unit={unit}>
+      <svg class="stage__layer" viewBox={viewBox} preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <filter id={`feather-${uid}`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6" /></filter>
+          <mask id={`body-${uid}`} maskUnits="userSpaceOnUse" x="-50" y="-50" width={traced.vw + 100} height={traced.vh + 100}>
+            <rect x="-50" y="-50" width={traced.vw + 100} height={traced.vh + 100} fill="#fff" />
+            {partNames.map((n) => <polygon points={pts(tparts[n].poly)} fill="#000" filter={`url(#feather-${uid})`} />)}
+          </mask>
+        </defs>
+        <g transform={tT}>
+          <g mask={`url(#body-${uid})`}>{traced.img ? <image class="ri" href={traced.img} width={traced.vw} height={traced.vh} /> : <path class="rp" d={traced.d} pathLength="1" fill-rule="evenodd" />}</g>
+          {patchesFor(undefined).map((p) => <path class="patch" d={p.d} style={`stroke-width:${p.w}`} />)}
+        </g>
+      </svg>
+      {partNames.map((n) => (
+        <svg class="stage__layer" viewBox={viewBox} preserveAspectRatio="none" aria-hidden="true" data-part={n} data-origin={pct(mapPivot(tparts[n].pivot))} data-unit={unit}>
+          <defs>
+            <filter id={`feather-${uid}-${n}`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6" /></filter>
+            <mask id={`${n}-${uid}`} maskUnits="userSpaceOnUse" x="-50" y="-50" width={traced.vw + 100} height={traced.vh + 100}>
+              <polygon points={pts(tparts[n].poly)} fill="#fff" filter={`url(#feather-${uid}-${n})`} />
+            </mask>
+          </defs>
+          <g transform={tT}>
+            <g mask={`url(#${n}-${uid})`}>{traced.img ? <image class="ri" href={traced.img} width={traced.vw} height={traced.vh} /> : <path class="rp" d={traced.d} pathLength="1" fill-rule="evenodd" />}</g>
+            {patchesFor(n).map((p) => <path class="patch" d={p.d} style={`stroke-width:${p.w}`} />)}
+          </g>
+        </svg>
+      ))}
+    </div>
+
+    {stage.front.length > 0 && (
+      <svg class="stage__layer" viewBox={viewBox} preserveAspectRatio="none" aria-hidden="true">
+        <defs><clipPath id={`front-${uid}`}><polygon points={pts(stage.front)} /></clipPath></defs>
+        <image class="stage__chair stage__front" href={stage.src} x="0" y="0" width={stage.w} height={stage.h} clip-path={`url(#front-${uid})`} data-chair />
+      </svg>
+    )}
+  </div>
+</div>
+
+<style>
+  .stage {
+    --d: 1;
+    --i: 1;
+    height: min(calc(var(--hcm) * var(--u, 0.42vh)), calc(var(--maxw, 94vw) * var(--ar)));
+    max-width: 100%;
+    position: relative;
+  }
+  .stage__art, .stage__fig { position: absolute; inset: 0; }
+  .stage__layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; display: block; }
+  .stage__shadow { fill: rgba(30, 26, 20, 0.2); filter: blur(6px); }
+  .stage__fig { --ink: var(--line); --dd: calc(var(--d) * var(--i)); }
+  .stage .rp {
+    fill: var(--ink);
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - min(1, var(--dd) * 1.35));
+    fill-opacity: clamp(0, calc((var(--dd) - 0.55) * 2.3), 1);
+  }
+  .stage .ri {
+    opacity: clamp(0, calc(var(--dd) * 1.4), 1);
+    clip-path: inset(0 0 0 calc((1 - var(--dd)) * 100%));
+  }
+  .stage .patch { fill: none; stroke: #f3e8d4; stroke-linecap: round; opacity: clamp(0, calc((var(--dd) - 0.6) * 2.5), 1); }
+</style>

@@ -1,0 +1,287 @@
+---
+import srcsetData from '../data/srcset.json';
+const srcset: Record<string, string> = srcsetData;
+const steps = [
+  { n: '01', t: 'Sketch', d: 'Every piece begins in the studio sketchbook, drawn by hand until the posture feels right.' },
+  { n: '02', t: 'Shape', d: 'The drawing becomes solid teak: cut, joined and sanded by hand. No veneers, no shortcuts.' },
+  { n: '03', t: 'Weave', d: 'Rattan is soaked, split and woven strand by strand across the seat and back.' },
+  { n: '04', t: 'Live', d: 'Then it leaves the workshop for cafés, kitchens and quiet corners. That is the Kaizen.' },
+];
+const steps3d = [
+  { n: '01', t: 'Sketch', d: 'Every piece begins in the studio sketchbook, drawn by hand until the posture feels right.' },
+  { n: '02', t: 'Shape', d: 'The frame is bent, joined and sanded by hand into its curved tub shape. No shortcuts.' },
+  { n: '03', t: 'Weave', d: 'Rattan is soaked, split and woven strand by strand around the frame, then the cushion goes in.' },
+  { n: '04', t: 'Live', d: 'Then it leaves the workshop for terraces, gardens and quiet corners. That is the Laurent.' },
+];
+---
+<section class="process" id="craft" data-process aria-labelledby="process-title">
+  <div class="process__pin">
+    <div class="p3d" aria-hidden="true">
+      <canvas data-p3d-canvas></canvas>
+      <span class="p3d__note" data-p3d-note data-at="0.34,1.04,-0.42"><span class="hand p3d__note-in p3d__note-in--ur">↙ hand-woven rattan</span></span>
+      <span class="p3d__note" data-p3d-note data-at="0.64,0.6,0.1"><span class="hand p3d__note-in p3d__note-in--r">↖ curved tub frame</span></span>
+      <span class="p3d__note" data-p3d-note data-at="-0.5,0.05,0.5"><span class="hand p3d__note-in p3d__note-in--l">solid legs ↗</span></span>
+    </div>
+    <div class="p3d__copy" aria-live="polite">
+      {steps3d.map((s, i) => (
+        <article class:list={['p3d__step', { 'is-on': i === 0 }]} data-p3d-step aria-label={s.t}>
+          <h3>{s.t}</h3>
+          <p class="p3d__desc">{s.d}</p>
+          <nav class="p3d__arrows" aria-label="Steps">
+            <button type="button" data-p3d-go={i - 1} disabled={i === 0} aria-label="Previous step">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+            </button>
+            <button type="button" data-p3d-go={i + 1} disabled={i === steps3d.length - 1} aria-label="Next step">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </button>
+          </nav>
+        </article>
+      ))}
+    </div>
+    <nav class="p3d__track" aria-label="Making steps" data-p3d-track>
+      <ol class="p3d__labels">
+        {steps3d.map((s, i) => (
+          <li data-p3d-node>
+            <button type="button" data-p3d-go={i}><span class="p3d__ln">{s.n}</span><span class="p3d__lt">{s.t}</span></button>
+          </li>
+        ))}
+      </ol>
+      <div class="p3d__ruler" aria-hidden="true">
+        <div class="p3d__ticks"></div>
+        <div class="p3d__ticks p3d__ticks--done"></div>
+        {[1, 2, 3].map((k) => <i class="p3d__major" style={`left:${k * 25}%`}></i>)}
+        <i class="p3d__head"></i>
+      </div>
+    </nav>
+
+    <div class="process__left">
+      <h2 class="serif-l" id="process-title">From sketch <em>to seat.</em></h2>
+      <ol class="process__steps">
+        {steps.map((s, i) => (
+          <li class:list={['process__step', { 'is-active': i === 0 }]} data-step>
+            <span class="process__n display display--condensed">{s.n}</span>
+            <div>
+              <h3>{s.t}</h3>
+              <p>{s.d}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div class="process__bar"><i data-process-bar></i></div>
+    </div>
+
+    <div class="process__stage">
+      <img class="process__layer process__sketch" src="/images/roux-sketch.jpg" alt="Hand sketch of the Roux Bar Chair with notes: crafted from solid wood, hand-woven rattan seat and backrest" data-p-sketch loading="lazy" />
+      <div class="process__layer process__real" data-p-real>
+        <img src="/cutouts/kaizen-stool.webp" srcset={srcset['/cutouts/kaizen-stool.webp']} sizes="auto, 30vw" alt="The finished Kaizen Bar Chair in teak and rattan" loading="lazy" />
+      </div>
+      <i class="process__wipe" data-p-wipe aria-hidden="true"></i>
+      <div class="process__layer process__zoom" data-p-zoom>
+        <img src="/images/kaizen-stool.jpg" alt="Close-up of the hand-woven rattan seat" loading="lazy" />
+        <span class="hand">handwoven rattan, one strand at a time</span>
+      </div>
+      <div class="process__layer process__live" data-p-live>
+        <img src="/images/nico-lifestyle.jpg" alt="A Timbre bar chair at a café counter in warm afternoon light" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process { position: relative; height: 420vh; background: var(--paper); z-index: 2; }
+  .process__pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: clamp(24px, 4vw, 72px);
+    align-items: center;
+    padding: 90px var(--gutter) 40px;
+    overflow: hidden;
+  }
+  .process__left h2 em { color: var(--rattan); }
+  .process__steps { list-style: none; padding: 0; margin: 36px 0 0; display: grid; gap: 4px; }
+  .process__step {
+    display: grid; grid-template-columns: 64px 1fr; gap: 16px; padding: 14px 0;
+    border-top: 1px solid rgba(31, 32, 28, 0.14); opacity: 0.32; transition: opacity 0.6s var(--ease-out);
+  }
+  .process__step.is-active { opacity: 1; }
+  .process__n { font-size: 44px; color: var(--rattan); }
+  .process__step h3 { margin: 4px 0; font-family: var(--f-display); font-size: 14px; letter-spacing: 0.16em; text-transform: uppercase; }
+  .process__step p { margin: 0; font-size: 15px; color: var(--ink-soft); max-height: 0; overflow: hidden; transition: max-height 0.7s var(--ease-out); }
+  .process__step.is-active p { max-height: 6em; }
+  .process__bar { height: 2px; background: rgba(31, 32, 28, 0.12); margin-top: 18px; }
+  .process__bar i { display: block; height: 100%; background: var(--rattan); transform-origin: left; transform: scaleX(0); }
+
+  .process__stage {
+    position: relative;
+    height: min(82svh, 780px);
+    aspect-ratio: 1152 / 1440;
+    max-width: 100%;
+    justify-self: center;
+    overflow: hidden;
+    background: #f6ecd9;
+    box-shadow: 0 30px 60px -30px rgba(60, 40, 20, 0.35);
+  }
+  .process__layer { position: absolute; inset: 0; }
+  .process__layer > img, .process__sketch { width: 100%; height: 100%; object-fit: cover; }
+  .process__real { clip-path: inset(0 0 0 100%); background: #f3e9d6; }
+  .process__real img { object-fit: contain; padding: 15% 15% 6% 17%; filter: drop-shadow(0 20px 20px rgba(60, 40, 20, 0.25)); }
+  .process__wipe { position: absolute; top: 0; bottom: 0; left: 100%; width: 2px; background: var(--rattan); box-shadow: 0 0 0 6px rgba(138, 92, 50, 0.12); }
+  .process__zoom, .process__live { opacity: 0; }
+  .process__zoom img { transform-origin: 42% 46%; transform: scale(2.1); }
+  .process__zoom span { position: absolute; left: 7%; bottom: 6%; font-size: 30px; color: var(--cream); text-shadow: 0 2px 12px rgba(0,0,0,.35); }
+
+  @media (max-width: 900px) and (min-height: 501px) {
+    .process { height: 460vh; }
+    .process__pin { grid-template-columns: 1fr; align-content: start; justify-items: center; gap: 16px; padding: 78px var(--gutter) 24px; }
+    .process__left { width: 100%; max-width: min(100%, 560px, calc((100svh - 78px - 210px) * 0.8)); }
+    .process__left h2 { font-size: 30px; }
+    .process__steps { margin-top: 10px; }
+    .process__step { padding: 10px 0 4px; grid-template-columns: 1fr; gap: 0; }
+    .process__step:not(.is-active) { display: none; }
+    .process__n { display: none; }
+    .process__step p { font-size: 14.5px; line-height: 1.5; }
+    .process__stage { order: -1; height: auto; width: min(100%, 560px, calc((100svh - 78px - 210px) * 0.8)); }
+    .process__zoom span { font-size: 24px; }
+  }
+
+  .p3d, .p3d__copy, .p3d__track { display: none; }
+  :global(html.p3d) .process__stage, :global(html.p3d) .process__steps, :global(html.p3d) .process__bar { display: none; }
+  :global(html.p3d) .p3d, :global(html.p3d) .p3d__copy, :global(html.p3d) .p3d__track { display: block; }
+  :global(html.p3d) .process__pin { display: block; padding: 0; }
+  :global(html.p3d) .process__left { position: absolute; z-index: 2; top: max(14svh, 110px); left: var(--gutter); pointer-events: none; }
+  :global(html.p3d) .process__left h2 { font-size: clamp(36px, min(4.4vw, 8svh), 84px); }
+
+  .p3d { position: absolute; inset: 0; z-index: 1; }
+  .p3d canvas { display: block; width: 100%; height: 100%; }
+  .p3d__note { position: absolute; left: 0; top: 0; opacity: 0; pointer-events: none; will-change: transform, opacity; }
+  .p3d__note-in { position: absolute; white-space: nowrap; font-size: clamp(20px, 1.7vw, 28px); color: var(--rattan); line-height: 1; }
+  .p3d__note-in--ur { left: 4px; bottom: 4px; }
+  .p3d__note-in--r { left: 10px; top: -4px; }
+  .p3d__note-in--l { right: 10px; top: -2px; }
+
+  .p3d::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 88%, transparent) 24%, color-mix(in srgb, var(--paper) 0%, transparent) 48%);
+  }
+
+  .p3d__copy {
+    position: absolute; z-index: 2; left: var(--gutter);
+    top: calc(50% - min(15svh, 130px));
+    width: min(400px, 30vw);
+  }
+  .p3d__step { position: absolute; left: 0; top: 0; width: 100%; visibility: hidden; transition: visibility 0s 0.5s; }
+  .p3d__step.is-on { visibility: visible; transition: visibility 0s; }
+  .p3d__step > * { opacity: 0; transform: translateY(18px); transition: opacity 0.45s var(--ease-out), transform 0.7s var(--ease-out); }
+  .p3d__step.is-on > * { opacity: 1; transform: none; }
+  .p3d__step.is-on > :nth-child(2) { transition-delay: 0.07s; }
+  .p3d__step.is-on > :nth-child(3) { transition-delay: 0.14s; }
+
+  .p3d__step h3 {
+    margin: 0 0 clamp(12px, 2svh, 18px);
+    font-family: var(--f-serif); font-weight: 400; font-size: clamp(44px, min(4.6vw, 8svh), 72px);
+    line-height: 0.95; letter-spacing: -0.035em; color: var(--ink);
+  }
+  .p3d__desc { margin: 0; max-width: 30ch; font-size: clamp(16px, 2.1svh, 19px); line-height: 1.6; color: var(--ink-soft); text-wrap: pretty; }
+
+  .p3d__arrows {
+    display: inline-flex; margin-top: clamp(22px, 4svh, 36px);
+    border: 1px solid rgba(31, 32, 28, 0.2); border-radius: 999px; overflow: hidden;
+    background: color-mix(in srgb, var(--paper) 70%, transparent);
+  }
+  .p3d__arrows button {
+    display: grid; place-items: center; width: 56px; height: 42px; color: var(--ink);
+    transition: background 0.35s var(--ease-out), color 0.35s, opacity 0.35s;
+  }
+  .p3d__arrows button + button { border-left: 1px solid rgba(31, 32, 28, 0.2); }
+  .p3d__arrows svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.35s var(--ease-out); }
+  .p3d__arrows button:hover:not(:disabled) { background: var(--ink); color: var(--cream); }
+  .p3d__arrows button:hover:not(:disabled):first-child svg { transform: translateX(-3px); }
+  .p3d__arrows button:hover:not(:disabled):last-child svg { transform: translateX(3px); }
+  .p3d__arrows button:disabled { color: rgba(31, 32, 28, 0.25); cursor: default; }
+  .p3d__arrows button:focus-visible { outline: 2px solid var(--rattan); outline-offset: -4px; border-radius: 999px; }
+
+  .p3d__track { --p: 0; position: absolute; z-index: 2; left: var(--gutter); right: var(--gutter); bottom: max(5svh, 34px); }
+
+  .p3d__labels { list-style: none; margin: 0 0 10px; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
+  .p3d__labels button {
+    display: flex; align-items: baseline; gap: 10px; padding: 6px 0; text-align: left;
+    color: rgba(31, 32, 28, 0.32); transition: color 0.45s var(--ease-out);
+  }
+  .p3d__labels button:hover { color: var(--ink); }
+  .p3d__labels button:focus-visible { outline: 2px solid var(--rattan); outline-offset: 4px; border-radius: 4px; }
+  .p3d__ln { font-family: var(--f-display); font-size: 12px; font-weight: 600; letter-spacing: 0.12em; }
+  .p3d__lt { font-family: var(--f-serif); font-size: clamp(17px, 1.4vw, 22px); letter-spacing: -0.01em; transition: transform 0.45s var(--ease-out); }
+  .p3d__labels li.is-done button { color: var(--ink-soft); }
+  .p3d__labels li.is-on button { color: var(--ink); }
+  .p3d__labels li.is-on .p3d__ln { color: var(--rattan); }
+
+  .p3d__ruler { position: relative; height: 22px; }
+  .p3d__ruler::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(31, 32, 28, 0.2); }
+  .p3d__ticks {
+    position: absolute; left: 0; bottom: 0; height: 9px; width: 100%;
+    background: repeating-linear-gradient(90deg, rgba(31, 32, 28, 0.22) 0 1px, transparent 1px calc(100% / 64));
+  }
+  .p3d__ticks::after {
+    content: ''; position: absolute; inset: -5px 0 0;
+    background: repeating-linear-gradient(90deg, rgba(31, 32, 28, 0.22) 0 1px, transparent 1px calc(100% / 16));
+  }
+  .p3d__ticks--done { clip-path: inset(0 calc((1 - var(--p)) * 100%) 0 0); }
+  .p3d__ticks--done, .p3d__ticks--done::after {
+    background: repeating-linear-gradient(90deg, var(--rattan) 0 1px, transparent 1px calc(100% / 64));
+  }
+  .p3d__ticks--done::after { background: repeating-linear-gradient(90deg, var(--rattan) 0 1.5px, transparent 1.5px calc(100% / 16)); }
+  .p3d__major { position: absolute; bottom: 0; width: 1.5px; height: 22px; background: rgba(31, 32, 28, 0.35); }
+  .p3d__head {
+    position: absolute; bottom: -3px; left: calc(var(--p) * 100%); width: 2px; height: 28px; margin-left: -1px;
+    background: var(--rattan); border-radius: 2px;
+  }
+  .p3d__head::before {
+    content: ''; position: absolute; left: 50%; top: -5px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%;
+    background: var(--rattan); box-shadow: 0 0 0 4px rgba(138, 92, 50, 0.18);
+  }
+  @media (max-height: 500px) {
+    .process__pin { padding: 62px var(--gutter) 14px; gap: 28px; }
+    .process__stage { height: calc(100svh - 80px); }
+    .process__left h2 { font-size: 28px; }
+    .process__steps { margin-top: 12px; }
+    .process__step { padding: 8px 0; grid-template-columns: 1fr; gap: 0; }
+    .process__n { display: none; }
+    .process__step p { font-size: 13.5px; }
+  }
+  @media (max-width: 900px) and (orientation: portrait) {
+    :global(html.p3d) .process__left { top: 84px; left: var(--gutter); right: var(--gutter); width: auto; max-width: none; }
+    :global(html.p3d) .process__left h2 { font-size: clamp(28px, 8vw, 44px); }
+    .p3d::after {
+      background: linear-gradient(0deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 90%, transparent) 24%, color-mix(in srgb, var(--paper) 0%, transparent) 44%);
+    }
+    .p3d__copy { top: auto; left: var(--gutter); right: var(--gutter); bottom: calc(max(3svh, 18px) + 64px); width: auto; height: 1px; }
+    .p3d__step { top: auto; bottom: 0; }
+    .p3d__step h3 { font-size: clamp(34px, 10vw, 52px); margin-bottom: 8px; }
+    .p3d__desc { max-width: 36ch; font-size: 15px; line-height: 1.5; }
+    .p3d__arrows { margin-top: 14px; }
+    .p3d__arrows button { width: 52px; height: 44px; }
+    .p3d__track { bottom: max(3svh, 18px); }
+    .p3d__labels { margin-bottom: 8px; }
+    .p3d__ln { display: none; }
+    .p3d__lt { font-size: 14px; }
+    .p3d__note-in { font-size: 17px; }
+  }
+  @media (max-height: 500px) and (orientation: landscape) {
+    :global(html.p3d) .process__left { top: 78px; }
+    :global(html.p3d) .process__left h2 { font-size: 26px; }
+    .p3d__copy { top: 116px; width: min(340px, 34vw); }
+    .p3d__step h3 { font-size: 28px; margin-bottom: 4px; }
+    .p3d__desc { font-size: 13.5px; line-height: 1.45; }
+    .p3d__arrows { margin-top: 10px; }
+    .p3d__arrows button { height: 36px; }
+    .p3d__track { bottom: 10px; }
+    .p3d__labels { margin-bottom: 4px; }
+    .p3d__ln { display: none; }
+    .p3d__lt { font-size: 14px; }
+    .p3d__ruler { height: 16px; }
+    .p3d__note-in { font-size: 16px; }
+  }
+</style>

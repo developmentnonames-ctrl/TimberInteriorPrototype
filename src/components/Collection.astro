@@ -1,0 +1,136 @@
+---
+import srcsetData from '../data/srcset.json';
+const srcset: Record<string, string> = srcsetData;
+import { products } from '../data/products.js';
+const total = String(products.length).padStart(2, '0');
+---
+<section class="collection" id="collection" data-collection aria-labelledby="collection-title">
+  <div class="collection__pin">
+    <header class="collection__head">
+      <h2 class="serif-xl" id="collection-title">The Timbre <em>collection.</em></h2>
+      <nav class="collection__arrows" aria-label="Browse the collection">
+        <button type="button" data-col-go="-1" aria-label="Previous piece" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+        </button>
+        <button type="button" data-col-go="1" aria-label="Next piece">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+      </nav>
+    </header>
+    <div class="collection__track" data-track>
+      {products.map((p, i) => (
+        <article class="card" data-card>
+          <div class="card__img" style={`--tint:${p.tint}`}>
+            <img src={p.img} srcset={srcset[p.img]} sizes="auto, 400px" alt={p.name} loading="lazy" />
+            <span class="card__idx display display--condensed">{String(i + 1).padStart(2, '0')}<small>/{total}</small></span>
+          </div>
+          <div class="card__meta">
+            <h3>{p.name}</h3>
+            <p class="it">{p.line}</p>
+            <div class="card__row">
+              <ul class="card__mats">{p.materials.map((m) => <li>{m}</li>)}</ul>
+              <ul class="card__sw" aria-label="Finishes">{p.swatches.map((c, j) => <li style={`background:${c};--k:${p.swatches.length - 1 - j}`}></li>)}</ul>
+            </div>
+          </div>
+        </article>
+      ))}
+
+      <a class="collection__end" href="#inquire">
+        <span class="serif-l">Not quite <em>what you need?</em></span>
+        <span class="pill pill--solid">Start an inquiry</span>
+      </a>
+    </div>
+    <div class="collection__progress"><i data-col-bar></i></div>
+  </div>
+</section>
+
+<style>
+  .collection { position: relative; background: var(--cream); z-index: 2; }
+  .collection__pin {
+    height: 100svh; overflow: hidden; position: relative;
+    display: flex; flex-direction: column; justify-content: safe center; gap: clamp(24px, 5svh, 56px);
+    padding: max(10svh, 100px) 0 max(8svh, 64px);
+  }
+  .collection__head { padding: 0 var(--gutter); }
+  .collection__arrows { display: none; }
+  .collection__head h2 { font-size: clamp(40px, min(4.6vw, 8svh), 88px); }
+  .collection__head em { color: var(--rattan); }  .collection__track {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(20px, 2.6vw, 44px);
+    padding: 0 var(--gutter);
+    will-change: transform;
+  }
+  .card { flex: 0 0 clamp(220px, min(24vw, 33svh), 400px); }
+  .card:nth-of-type(even) { margin-top: 5svh; }
+  .collection__end { align-self: center; }
+  .card__img {
+    position: relative; aspect-ratio: 4 / 5; overflow: hidden;
+    background:
+      radial-gradient(60% 9% at 50% 89%, rgba(60, 40, 20, 0.12), transparent 70%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tint, var(--sand)) 11%, #fbf8f2), color-mix(in srgb, var(--tint, var(--sand)) 17%, #f8f3ea));
+  }
+  .card__img img {
+    width: 100%; height: 100%; object-fit: contain; padding: 14% 12% 11%;
+    filter: drop-shadow(0 14px 14px rgba(60, 40, 20, 0.14));
+    transition: transform 1.2s var(--ease-out);
+  }
+  .card:hover .card__img img { transform: scale(1.06); }
+  .card__idx { position: absolute; top: 12px; left: 14px; font-size: 34px; color: var(--ink); mix-blend-mode: multiply; opacity: 0.75; }
+  .card__idx small { font-size: 0.42em; vertical-align: top; margin-left: 2px; }
+  .card__meta { padding-top: 14px; }
+  .card__meta h3 { margin: 0; font-family: var(--f-serif); font-weight: 400; font-size: 26px; letter-spacing: -0.01em; }
+  .card__meta p { margin: 2px 0 12px; color: var(--ink-soft); font-size: 15px; }
+  .card__row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .card__mats { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .card__mats li { font-family: var(--f-display); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid rgba(31,32,28,.25); border-radius: 99px; padding: 4px 9px; }
+  .card__sw { list-style: none; padding: 0; margin: 0; display: flex; }
+  .card__sw li { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--cream); margin-left: -5px; transition: transform 0.5s var(--ease-out); }
+  .card:hover .card__sw li { transform: translateX(calc(var(--k) * -8px)); }
+
+  .collection__end { flex: 0 0 min(480px, 80vw); display: grid; gap: 24px; justify-items: start; padding: 0 4vw; }
+  .collection__end em { color: var(--rattan); }
+
+  .collection__progress { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 5vh; height: 2px; background: rgba(31,32,28,.12); }
+  .collection__progress i { display: block; height: 100%; background: var(--ink); transform-origin: left; transform: scaleX(0); }
+
+  @media (max-width: 820px), (max-height: 500px) {
+    .collection__pin { height: auto; padding: 96px 0 72px; gap: 28px; }
+    .collection__track { overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); -webkit-overflow-scrolling: touch; align-items: flex-start; scrollbar-width: none; }
+    .collection__track > * { scroll-snap-align: start; }
+    .card { flex-basis: 74vw; }
+    .card:nth-of-type(n) { margin: 0; }
+    .card:hover .card__img img { transform: none; }
+    .collection__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+    .collection__arrows {
+      display: inline-flex; flex: none; margin-bottom: 4px;
+      border: 1px solid rgba(31, 32, 28, 0.2); border-radius: 999px; overflow: hidden;
+    }
+    .collection__arrows button { display: grid; place-items: center; width: 52px; height: 44px; color: var(--ink); transition: background 0.35s var(--ease-out), color 0.35s; }
+    .collection__arrows button + button { border-left: 1px solid rgba(31, 32, 28, 0.2); }
+    .collection__arrows svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .collection__arrows button:active:not(:disabled) { background: var(--ink); color: var(--cream); }
+    .collection__arrows button:disabled { color: rgba(31, 32, 28, 0.25); cursor: default; }
+    .collection__arrows button:focus-visible { outline: 2px solid var(--rattan); outline-offset: -4px; border-radius: 999px; }
+    .collection__progress { position: relative; left: auto; right: auto; bottom: auto; margin: 0 var(--gutter); }
+    .collection__end {
+      flex-basis: 74vw; align-self: flex-start;
+      aspect-ratio: 4 / 5; padding: 9% 9% 10%;
+      align-content: end; gap: 22px;
+      background:
+        radial-gradient(80% 60% at 100% 0%, color-mix(in srgb, var(--rattan-light) 22%, transparent), transparent 70%),
+        linear-gradient(180deg, color-mix(in srgb, var(--sand) 26%, #fbf8f2), color-mix(in srgb, var(--sand) 38%, #f6efe2));
+      box-shadow: inset 0 0 0 1px rgba(138, 92, 50, 0.12);
+      container-type: inline-size;
+    }
+    .collection__end .serif-l { font-size: 16cqw; line-height: 1.02; }
+    .collection__end .pill { padding-inline: 22px; white-space: nowrap; }
+  }
+  @media (min-width: 601px) and (max-width: 820px) {
+    .card, .collection__end { flex-basis: 42vw; }
+  }
+  @media (max-height: 500px) {
+    .collection__pin { padding: 76px 0 48px; }
+    .card, .collection__end { flex-basis: min(30vw, 250px); }
+  }
+</style>

@@ -1,0 +1,115 @@
+<footer class="foot" id="inquire" data-foot data-tone="dark">
+  <div class="foot__top">
+    <div class="foot__copy">
+      <h2 class="serif-xl" data-split>Let's make something <em>you'll live with.</em></h2>
+      <p class="foot__sub">Custom sizes, finishes and upholstery for homes, hotels and cafés. Tell us a little about your space. We usually reply within two working days.</p>
+    </div>
+
+    <form class="form" data-form novalidate>
+      <label><span>Name</span><input name="name" autocomplete="name" placeholder="Your name" required /></label>
+      <label><span>Email</span><input name="email" type="email" autocomplete="email" placeholder="you@studio.com" required /></label>
+      <fieldset>
+        <legend>I'm interested in</legend>
+        <div class="form__chips">
+          {['Lounge chairs', 'Bar chairs', 'Sofas', 'Outdoor', 'Trade / hospitality'].map((c) => (
+            <label class="chip"><input type="checkbox" name="interest" value={c} /><span>{c}</span></label>
+          ))}
+        </div>
+      </fieldset>
+      <label><span>Tell us about your space</span><textarea name="msg" rows="2" placeholder="A sunlit café in Galle, twelve bar chairs…"></textarea></label>
+      <button class="pill pill--light" type="submit">Send inquiry <span aria-hidden="true">→</span></button>
+      <p class="form__ok" data-form-ok role="status">Thank you. This is a prototype, so nothing was sent.</p>
+    </form>
+  </div>
+
+  <div class="foot__mark">
+    <div class="foot__reader" aria-hidden="true"><span class="foot__woman" data-foot-woman></span></div>
+    <span class="wordmark" role="img" aria-label="timbre"></span>
+  </div>
+
+  <div class="foot__bottom">
+    <span>© 2026 Timbre Studio · Sri Lanka</span>
+    <nav aria-label="Social">
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+      <a href="#">Pinterest</a>
+    </nav>
+    <a href="#top">Back to top ↑</a>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    position: relative; z-index: 2;
+    background: var(--forest); color: var(--line);
+    padding: clamp(100px, 16vh, 200px) var(--gutter) 28px;
+    overflow: hidden;
+  }
+  .foot__top { display: grid; grid-template-columns: 6fr 5fr; gap: clamp(32px, 6vw, 110px); }
+  .foot__copy em { color: var(--sand); }
+  .foot__sub { opacity: 0.8; max-width: 44ch; }
+
+  .form { display: grid; gap: 22px; align-content: start; padding-top: 8px; }
+  .form label > span, .form legend {
+    display: block; font-family: var(--f-display); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px;
+  }
+  .form input:not([type='checkbox']), .form textarea {
+    width: 100%; background: transparent; border: 0; border-bottom: 1px solid rgba(243, 232, 212, 0.35);
+    color: var(--line); font: inherit; font-size: 20px; padding: 6px 0 12px; outline: none; resize: vertical; transition: border-color 0.4s;
+  }
+  .form input::placeholder, .form textarea::placeholder { color: rgba(243, 232, 212, 0.35); }
+  .form input:focus, .form textarea:focus { border-color: var(--sand); }
+  .form fieldset { border: 0; padding: 0; margin: 0; }
+  .form__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .chip span { display: inline-block; padding: 9px 15px; border-radius: 99px; border: 1px solid rgba(243, 232, 212, 0.35); font-size: 15px; cursor: pointer; transition: background 0.4s, color 0.4s, border-color 0.4s; }
+  .chip input:checked + span { background: var(--sand); color: var(--forest); border-color: var(--sand); }
+  .chip input:focus-visible + span { outline: 2px solid var(--sand); outline-offset: 2px; }
+  .pill--light { justify-self: start; background: var(--line); color: var(--forest); border-color: var(--line); }
+  .pill--light:hover { background: var(--sand); border-color: var(--sand); color: var(--forest); }
+  .form__ok { margin: 0; opacity: 0; transform: translateY(8px); transition: 0.6s var(--ease-out); color: var(--sand); }
+  .form.is-sent .form__ok { opacity: 1; transform: none; }
+
+  .foot__mark { --h: clamp(170px, 24vw, 400px); position: relative; margin-top: calc(var(--h) * 0.7 + 40px); }
+  .foot__mark .wordmark { width: 100%; display: block; color: var(--line); }
+  .foot__reader {
+    --fh: calc(var(--h) * 1.3);
+    position: absolute;
+    height: var(--fh);
+    aspect-ratio: 1030 / 1440;
+    left: calc(55.5% - var(--fh) * 0.715 * 0.83);
+    bottom: calc(100% - 3.5% - var(--fh) * 0.4);
+    z-index: 2;
+  }
+  .foot__woman {
+    display: block; width: 100%; height: 100%;
+    background: var(--sand);
+    -webkit-mask: url('/figures/laurent-woman-foot.webp') center / contain no-repeat;
+    mask: url('/figures/laurent-woman-foot.webp') center / contain no-repeat;
+  }
+  .foot__bottom {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(243, 232, 212, 0.2);
+    font-family: var(--f-display); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.8;
+  }
+  .foot__bottom nav { display: flex; gap: 22px; }
+  .foot__bottom a:hover { color: var(--sand); }
+  @media (max-width: 860px) { .foot__top { grid-template-columns: 1fr; } }
+  @media (min-width: 861px) {
+    .foot { --wm: clamp(110px, 19svh, 360px); min-height: 100svh; display: flex; flex-direction: column; padding-top: 6svh; }
+    .foot__top { flex: 1; }
+    .foot .serif-xl { font-size: clamp(36px, min(5.4vw, 9svh), 104px); }
+    .form { gap: 2svh 28px; grid-template-columns: 1fr 1fr; }
+    .form > fieldset, .form > label:has(textarea), .form > button, .form > .form__ok { grid-column: 1 / -1; }
+    .form input:not([type='checkbox']), .form textarea { font-size: clamp(16px, 2.2svh, 20px); padding: 0.6svh 0 1.2svh; }
+    .chip span { padding: 0.9svh 14px; }
+    .foot__mark { --h: calc(var(--wm) * 1.09); width: min(100%, calc(var(--wm) * 4.26)); margin-inline: auto; margin-top: calc(var(--h) * 0.7 + 2svh); }
+    .foot__bottom { margin-top: 1.4svh; padding-top: 1.6svh; }
+  }
+  @media (min-width: 861px) and (max-height: 820px) {
+    .foot { --wm: 15svh; padding-top: 5svh; }
+    .form { gap: 1.6svh 28px; }
+    .form label > span, .form legend { margin-bottom: 4px; }
+  }
+</style>

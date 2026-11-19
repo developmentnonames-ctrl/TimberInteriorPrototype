@@ -1,0 +1,127 @@
+---
+import srcsetData from '../data/srcset.json';
+const srcset: Record<string, string> = srcsetData;
+const ticks = Array.from({ length: 40 }, (_, i) => {
+  const a = ((i * 9 - 90) * Math.PI) / 180;
+  const p = (r: number) => [22 + r * Math.cos(a), 22 + r * Math.sin(a)].map((n) => n.toFixed(2));
+  const [x1, y1] = p(16), [x2, y2] = p(20.2);
+  return { x1, y1, x2, y2 };
+});
+---
+<section class="studio" id="studio">
+  <div class="studio__grid">
+    <figure class="studio__img studio__img--a" data-reveal-img>
+      <div class="studio__frame"><img src="/images/craftsman.jpg" srcset={srcset['/images/craftsman.jpg']} sizes="auto, 33vw" alt="A Sri Lankan craftsman sighting along a length of timber in his workshop: We don’t just make furniture, we hold rhythm" loading="lazy" /></div>
+      <figcaption class="hand">curved by hand, not by machine ↗</figcaption>
+    </figure>
+
+    <div class="studio__copy">
+      <p class="studio__lead" data-fade>
+        We work with Sri Lankan carpenters, weavers and upholsterers who have shaped teak and rattan for generations.
+        Together, we give their craft a modern silhouette.
+      </p>
+      <p class="studio__body" data-fade>
+        Every piece begins as a pencil sketch and is built from solid wood. It isn't finished until someone sits in it.
+        Nothing is rushed, and everything is made to order.
+      </p>
+      <ul class="studio__stats" data-stats>
+        <li class="stat" data-fade>
+          <svg class="stat__viz" viewBox="0 0 44 44" aria-hidden="true">
+            {[20, 14, 8].map((r) => <circle cx="22" cy="22" r={r} class="stat__ring" pathLength="100" />)}
+            <circle cx="22" cy="22" r="2.4" class="stat__pith" />
+          </svg>
+          <p class="stat__num"><span class="display display--condensed" data-count-to="100">100</span><sup>%</sup></p>
+          <p class="stat__label">solid wood, in every frame</p>
+        </li>
+        <li class="stat" data-fade>
+          <svg class="stat__viz" viewBox="0 0 44 44" aria-hidden="true">
+            {ticks.map((t) => <line class="stat__tick" x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} />)}
+          </svg>
+          <p class="stat__num"><span class="display display--condensed" data-count-to="40">40</span><sup>hrs</sup></p>
+          <p class="stat__label">of hand-weaving for one chair back</p>
+        </li>
+        <li class="stat" data-fade>
+          <svg class="stat__viz" viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="19" class="stat__track" />
+            <circle cx="22" cy="3" r="4.2" class="stat__bead" />
+          </svg>
+          <p class="stat__num"><span class="display display--condensed" data-count-to="1">1</span><sup>at a time</sup></p>
+          <p class="stat__label">every piece made to order</p>
+        </li>
+      </ul>
+    </div>
+
+    <figure class="studio__img studio__img--b" data-reveal-img>
+      <div class="studio__frame"><img src="/images/pencil.jpg" srcset={srcset['/images/pencil.jpg']} sizes="auto, 25vw" alt="A Timbre pencil: sketching is a way of thinking with the hand" loading="lazy" /></div>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .studio {
+    background: var(--cream);
+    padding: clamp(96px, 16vh, 200px) var(--gutter);
+    position: relative;
+    z-index: 2;
+  }
+  .studio__grid {
+    display: grid;
+    grid-template-columns: 5fr 4fr 3fr;
+    gap: clamp(24px, 4vw, 72px);
+    align-items: start;
+  }
+  .studio__frame { overflow: hidden; aspect-ratio: 4 / 5; }
+  .studio__frame img { width: 100%; height: 100%; object-fit: cover; }
+  .studio__img { margin: 0; }
+  .studio__img--a img { filter: brightness(1.12) contrast(0.82) saturate(0.88) sepia(0.1); }
+  .studio__img--b { margin-top: 32vh; }
+  .studio__img figcaption { margin-top: 12px; font-size: 26px; color: var(--rattan); }
+  .studio__copy { padding-top: 12vh; color: var(--ink-soft); }
+  .studio__lead { font-size: clamp(20px, 1.6vw, 26px); line-height: 1.4; color: var(--ink); margin-top: 0; max-width: 30ch; text-wrap: pretty; }
+  .studio__body { line-height: 1.65; max-width: 44ch; text-wrap: pretty; }
+  .studio__stats { list-style: none; padding: 0; margin: 48px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid rgba(31, 32, 28, 0.15); }
+  .stat { padding: 18px 16px 0; border-left: 1px solid rgba(31, 32, 28, 0.15); display: grid; align-content: start; gap: 10px; }
+  .stat:first-child { padding-left: 0; border-left: 0; }
+  .stat__viz { display: block; width: 44px; height: 44px; overflow: visible; shape-rendering: geometricPrecision; }
+  .stat__viz circle, .stat__viz line { fill: none; stroke-width: 2.5; stroke-linecap: round; }
+  .stat__track { stroke: rgba(31, 32, 28, 0.1); }
+  .stat__ring { stroke: var(--rattan); stroke-dasharray: 100; stroke-dashoffset: 0; transform: rotate(-90deg); transform-origin: 22px 22px; }
+  .stat__viz .stat__ring { stroke-width: 1.6; }
+  .stat__viz .stat__pith { fill: var(--rattan); stroke: none; transform-box: fill-box; transform-origin: center; }
+  .stat__viz .stat__tick { stroke: var(--rattan); stroke-width: 1.1; }
+  .stat__viz .stat__bead { fill: var(--rattan); stroke: var(--cream); stroke-width: 2; transform-box: fill-box; transform-origin: center; }
+  .stat__num { margin: 0; display: flex; align-items: flex-start; gap: 4px; color: var(--ink); line-height: 0.9; }
+  .stat__num .display { font-size: clamp(44px, 4.4vw, 76px); }
+  .stat__num sup { font-family: var(--f-display); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--rattan); margin-top: 0.3em; white-space: nowrap; }
+  .stat__label { margin: 0; font-size: 14px; line-height: 1.4; color: var(--ink-soft); text-wrap: pretty; }
+
+  @media (max-width: 900px), (max-height: 500px) {
+    .studio__grid { grid-template-columns: 1fr 1fr; }
+    .studio__copy { grid-column: 1 / -1; grid-row: 1; padding-top: 0; }
+    .studio__img--b { margin-top: 18vh; }
+  }
+  @media (max-width: 600px) {
+    .studio { padding-block: 88px 72px; }
+    .studio__grid { gap: 28px 14px; }
+    .studio__img--b { margin-top: 56px; }
+    .studio__img figcaption { font-size: 20px; margin-top: 8px; }
+    .studio__stats { margin-top: 32px; }
+    .stat { padding: 14px 10px 0; gap: 8px; }
+    .stat__num .display { font-size: 40px; }
+    .stat__label { font-size: 13px; }
+  }
+  @media (min-width: 901px) and (min-height: 501px) {
+    .studio { height: 100svh; padding-block: max(8svh, 100px) 6svh; display: flex; align-items: center; }
+    .studio__grid { width: 100%; align-items: center; grid-template-columns: auto minmax(0, 1fr) auto; }
+    .studio__img--a { --h: min(62svh, 40vw); }
+    .studio__img--b { --h: min(46svh, 28vw); margin-top: 16svh; }
+    .studio__img .studio__frame { height: var(--h); width: calc(var(--h) * 0.8); }
+    .studio__img figcaption { font-size: clamp(20px, 3svh, 26px); margin-top: 1.2svh; }
+    .studio__copy { padding-top: 0; }
+    .studio__lead { font-size: clamp(18px, 2.6svh, 26px); }
+    .studio__body { font-size: clamp(15px, 2svh, 18px); }
+    .studio__stats { margin-top: 4svh; }
+    .stat { padding-top: 2svh; gap: 1.2svh; }
+    .stat__num .display { font-size: clamp(38px, 7svh, 84px); }
+  }
+</style>

@@ -1,0 +1,70 @@
+---
+import srcsetData from '../data/srcset.json';
+const srcset: Record<string, string> = srcsetData;
+const lines = ['People', 'ignore', 'design', 'that', 'ignores', 'people.'];
+const floats = [
+  { src: '/cutouts/theo-stool.webp', alt: 'Theo Bar Stool', cls: 'f1', speed: 0.9, cm: 75, w: 218, h: 329 },
+  { src: '/cutouts/kaizen-stool.webp', alt: 'Kaizen Bar Chair', cls: 'f2', speed: 1.5, cm: 102, w: 730, h: 1150 },
+  { src: '/cutouts/otto-lounge.webp', alt: 'Otto Lounge Chair', cls: 'f3', speed: 1.2, cm: 80, w: 560, h: 540 },
+  { src: '/cutouts/laurent-lounge.webp', alt: 'Laurent Outdoor Lounge', cls: 'f4', speed: 0.7, cm: 82, w: 657, h: 662 },
+];
+---
+<section class="manifesto" data-manifesto aria-label="Manifesto">
+  <div class="manifesto__pin">
+    {floats.map((f) => <img class:list={['manifesto__float', f.cls]} src={f.src} srcset={srcset[f.src]} sizes="(max-width: 720px) 50vw, 24vw" width={f.w} height={f.h} alt={f.alt} data-float={f.speed} style={`--cm:${f.cm}`} loading="lazy" />)}
+    <h2 class="manifesto__text display display--condensed">
+      {lines.map((w) => <span class="manifesto__w" data-mw>{w}</span>)}
+    </h2>
+  </div>
+</section>
+
+<style>
+  .manifesto { position: relative; background: var(--sand); color: var(--line); height: 260vh; }
+  .manifesto__pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    align-content: center;
+  }
+  .manifesto__pin::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: url('/images/manifesto-wood.webp') center / cover no-repeat;
+    opacity: 0.55;
+  }
+  .manifesto__text {
+    position: relative;
+    z-index: 2;
+    font-size: clamp(56px, 12.4vh, 150px);
+    line-height: 0.84;
+    text-align: center;
+    display: grid;
+  }
+  .manifesto__w { display: block; opacity: 0.18; transition: opacity 0.14s linear; }
+  .manifesto__w.is-on { opacity: 1; }
+  .manifesto__float {
+    --k: min(0.4svh, 0.29vw);
+    position: absolute;
+    z-index: 1;
+    height: calc(var(--cm) * var(--k));
+    width: auto;
+    filter: drop-shadow(0 24px 22px rgba(90, 60, 20, 0.22));
+    will-change: transform;
+  }
+  .f1 { left: 9%; top: 60%; }
+  .f2 { right: 7%; top: 42%; z-index: 3; }
+  .f3 { left: 8%; top: 6%; }
+  .f4 { right: 10%; top: 0%; }
+  @media (max-width: 720px) {
+    .manifesto__pin::before { background-image: url('/images/manifesto-wood-1080w.webp'); }
+    .manifesto__text { font-size: clamp(52px, 15vw, 90px); }
+    .manifesto__float { --k: min(0.27svh, 0.6vw); }
+    .f1 { left: 2%; top: 72%; } .f2 { right: -2%; top: 60%; z-index: 1; } .f3 { left: -2%; top: 5%; } .f4 { right: 0%; top: 2%; }
+  }
+</style>
